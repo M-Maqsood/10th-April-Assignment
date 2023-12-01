@@ -1,0 +1,80 @@
+
+Q1. A company conducted a survey of its employees and found that 70% of the employees use the company's health insurance plan, while 40% of the employees who use the plan are smokers. What is the probability that an employee is a smoker given that he/she uses the health insurance plan?
+Ans: Let A be the probability of employees who is smoker.
+Let B be the probability of employees who use company's health insurance plan
+P(A)=0.4, P(B)=0.7
+P(A/B)
+
+Q2. What is the difference between Bernoulli Naive Bayes and Multinomial Naive Bayes?
+Ans: Bernoulli Naive Bayes assumes that the features are binary while Multinomial Naive Bayes assumes that each feature is categorical. Bernoulli Naive Bayes is computationally less expensive than Multinomial Naive Bayes.
+
+Q3. How does Bernoulli Naive Bayes handle missing values?
+Ans: Bernoulli Naive Bayes handles missing values by just ignoring them. This is because Bernoulli Naive Bayes assumes that each feature is binary, and missing values cannot be interpreted as yes or no.
+
+Q4. Can Gaussian Naive Bayes be used for multi-class classification?
+Ans: Yes, because Gaussian Naive Bayes assumes that the features are normally distributed, and this assumption can be met for many multi-class
+
+ 
+Q5. Assignment:
+Data preparation:
+Download the "Spambase Data Set" from the UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/ datasets/Spambase). This dataset contains email messages, where the goal is to predict whether a message is spam or not based on several input features.
+
+import pandas as pd
+import numpy as np
+from sklearn.naive_bayes import BernoulliNB,GaussianNB,MultinomialNB
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+df=pd.read_csv('spambase.data')
+df.head()
+0	0.64	0.64.1	0.1	0.32	0.2	0.3	0.4	0.5	0.6	...	0.41	0.42	0.43	0.778	0.44	0.45	3.756	61	278	1
+0	0.21	0.28	0.50	0.0	0.14	0.28	0.21	0.07	0.00	0.94	...	0.00	0.132	0.0	0.372	0.180	0.048	5.114	101	1028	1
+1	0.06	0.00	0.71	0.0	1.23	0.19	0.19	0.12	0.64	0.25	...	0.01	0.143	0.0	0.276	0.184	0.010	9.821	485	2259	1
+2	0.00	0.00	0.00	0.0	0.63	0.00	0.31	0.63	0.31	0.63	...	0.00	0.137	0.0	0.137	0.000	0.000	3.537	40	191	1
+3	0.00	0.00	0.00	0.0	0.63	0.00	0.31	0.63	0.31	0.63	...	0.00	0.135	0.0	0.135	0.000	0.000	3.537	40	191	1
+4	0.00	0.00	0.00	0.0	1.85	0.00	0.00	1.85	0.00	0.00	...	0.00	0.223	0.0	0.000	0.000	0.000	3.000	15	54	1
+5 rows × 58 columns
+
+X=df.iloc[:,:-1]
+y=df.iloc[:,-1]
+X_train, X_test, y_train, y_test = train_test_split(
+     X, y, test_size=0.30, random_state=42)
+bernaulli_nb=BernoulliNB()
+gaussian_nb=GaussianNB()
+multi_nb=MultinomialNB()
+def evaluate_classifier(classifier, name):
+    accuracy_scores = cross_val_score(classifier, X, y, cv=10, scoring='accuracy')
+    precision_scores = cross_val_score(classifier, X, y, cv=10, scoring='precision')
+    recall_scores = cross_val_score(classifier, X, y, cv=10, scoring='recall')
+    f1_scores = cross_val_score(classifier, X, y, cv=10, scoring='f1')
+
+    print(f"Performance metrics for {name}:")
+    print(f"Accuracy: {np.mean(accuracy_scores)}")
+    print(f"Precision: {np.mean(precision_scores)}")
+    print(f"Recall: {np.mean(recall_scores)}")
+    print(f"F1 Score: {np.mean(f1_scores)}")
+    print("\n")
+evaluate_classifier(bernaulli_nb, "Bernoulli Naive Bayes")
+evaluate_classifier(multi_nb, "Multinomial Naive Bayes")
+evaluate_classifier(gaussian_nb, "Gaussian Naive Bayes")
+Performance metrics for Bernoulli Naive Bayes:
+Accuracy: 0.8839130434782609
+Precision: 0.886914139754535
+Recall: 0.8151235504826666
+F1 Score: 0.8480714616697421
+
+
+Performance metrics for Multinomial Naive Bayes:
+Accuracy: 0.786086956521739
+Precision: 0.7390291264847734
+Recall: 0.7207971586424625
+F1 Score: 0.7277511309974372
+
+
+Performance metrics for Gaussian Naive Bayes:
+Accuracy: 0.8217391304347826
+Precision: 0.7102746648832371
+Recall: 0.9569394693704085
+F1 Score: 0.8129997873786424
+
+
+Bernoulli Naive Bayes's performance is best, because the target variable is a binary classification. Bernoulli Naive can be sensitive to outliers.
